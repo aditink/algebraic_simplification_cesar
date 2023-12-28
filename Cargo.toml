@@ -1,0 +1,16 @@
+[package]
+name = "simplify"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+egg = "0.9.5"
+ordered-float = "3.0.0"
+rand = "0.8.5"
+z3 = {version="0.12", features = ["static-link-z3"]}
+z3-sys = {version="0.8", features = ["static-link-z3"]}
+
+[dev-dependencies]
+ordered-float = "3.0.0"
