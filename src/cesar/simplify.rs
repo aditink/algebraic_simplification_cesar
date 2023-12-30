@@ -6,6 +6,8 @@ use crate::cesar::pass3::Pass3;
 use crate::cesar::pass4::Pass4;
 use crate::cesar::pass5::Pass5;
 use crate::cesar::pass6::Pass6;
+use crate::cesar::pass7::Pass7;
+use crate::cesar::pass8::Pass8;
 use crate::cesar::rearrange_pass::RearrangePass;
 use crate::cesar::z3utils;
 
@@ -28,68 +30,55 @@ fn check_equiv(initial: String, fin: String, assumptions: String) -> bool {
     result
 }
 
+fn store_if_equiv(old_expr: String, assumptions: String,
+    pass: impl Fn(String, String) -> String) -> String {
+    let mut result = pass(old_expr.clone(), assumptions.clone());
+    // If the result is not equivalent to the original, then return the original.
+    if !check_equiv(old_expr.clone(), result.clone(), assumptions.clone()) {
+        if config::DEBUG {
+            println!("Simplify pass failed.")
+        }
+        result = old_expr;
+    }
+    result
+}
+
 /// simplify + check for general case redundant disjunct and conjuncts.
 pub fn aggressive_simplify(expr: String, assumptions: String) {
 
-    let mut result1 = Pass1::simplify(expr.clone(), assumptions.clone());
-    // If the result is not equivalent to the original, then return the original.
-    if !check_equiv(expr.clone(), result1.clone(), assumptions.clone()) {
-        if config::DEBUG {
-            println!("Simplify Pass1 failed.");
-        }
-        result1 = expr
+    let result1 = store_if_equiv(expr.clone(),
+        assumptions.clone(),  Pass1::simplify);
+
+    let result2 = store_if_equiv(result1.clone(),
+        assumptions.clone(), Pass2::simplify);
+        
+    let result3 = store_if_equiv(result2.clone(),
+        assumptions.clone(), Pass3::simplify);
+
+    let result4 = store_if_equiv(result3.clone(),
+        assumptions.clone(), Pass4::simplify);
+
+    let result5 = store_if_equiv(result4.clone(),
+        assumptions.clone(), Pass5::simplify);
+    
+    let result6 = store_if_equiv(result5.clone(),
+        assumptions.clone(), Pass6::simplify);
+
+    let result7 = store_if_equiv(result6.clone(),
+        assumptions.clone(), Pass7::simplify);
+    
+    let result8 = store_if_equiv(result7.clone(),
+        assumptions.clone(), Pass8::simplify);
+
+    // Another round of eliminating conjuncts.
+    let result9 = store_if_equiv(result8.clone(),
+        assumptions.clone(), Pass6::simplify);
+
+    if config::DEBUG {
+        println!("Passes succeeded.");
     }
 
-    let mut result2 = Pass2::simplify(result1.clone(), assumptions.clone());
-    // If the result is not equivalent to the original, then return the original.
-    if !check_equiv(result1.clone(), result2.clone(), assumptions.clone()) {
-        if config::DEBUG {
-            println!("Simplify Pass2 failed.");
-        }
-        result2 = result1
-    }
-
-    let mut result3 = Pass3::simplify(result2.clone(), assumptions.clone());
-    // If the result is not equivalent to the original, then return the original.
-    if !check_equiv(result2.clone(), result3.clone(), assumptions.clone()) {
-        if config::DEBUG {
-            println!("Simplify Pass3 failed.");
-        }
-        result3 = result2
-    }
-
-    let mut result4 = Pass4::simplify(result3.clone(), assumptions.clone());
-    // If the result is not equivalent to the original, then return the original.
-    if !check_equiv(result3.clone(), result4.clone(), assumptions.clone()) {
-        if config::DEBUG {
-            println!("Simplify Pass4 failed.");
-        }
-        result4 = result3
-    }
-
-    let mut result5 = Pass5::simplify(result4.clone(), assumptions.clone());
-    // If the result is not equivalent to the original, then return the original.
-    if !check_equiv(result4.clone(), result5.clone(), assumptions.clone()) {
-        if config::DEBUG {
-            println!("Simplify Pass5 failed.");
-        }
-        result5 = result4
-    }
-
-    let mut result6 = Pass6::simplify(result5.clone(), assumptions.clone());
-    // If the result is not equivalent to the original, then return the original.
-    if !check_equiv(result5.clone(), result6.clone(), assumptions.clone()) {
-        if config::DEBUG {
-            println!("Simplify Pass6 failed.");
-        }
-        result6 = result5
-    }
-
-    // if config::DEBUG {
-    //     println!("Passes succeeded.");
-    // }
-
-    println!("{}", result6);
+    println!("{}", result9);
 }
 
 /// A function to clean up bad things like 0<0.
