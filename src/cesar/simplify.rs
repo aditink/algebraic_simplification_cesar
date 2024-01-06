@@ -1,6 +1,7 @@
 
 use crate::cesar::config;
 use crate::cesar::pass1::Pass1;
+use crate::cesar::pass10::Pass10;
 use crate::cesar::pass2::Pass2;
 use crate::cesar::pass3::Pass3;
 use crate::cesar::pass4::Pass4;
@@ -8,6 +9,7 @@ use crate::cesar::pass5::Pass5;
 use crate::cesar::pass6::Pass6;
 use crate::cesar::pass7::Pass7;
 use crate::cesar::pass8::Pass8;
+use crate::cesar::pass9::Pass9;
 use crate::cesar::rearrange_pass::RearrangePass;
 use crate::cesar::z3utils;
 
@@ -71,14 +73,20 @@ pub fn aggressive_simplify(expr: String, assumptions: String) {
         assumptions.clone(), Pass8::simplify);
 
     // Another round of eliminating conjuncts.
-    let result9 = store_if_equiv(result8.clone(),
+    let result6_2 = store_if_equiv(result8.clone(),
         assumptions.clone(), Pass6::simplify);
+
+    let result9 = store_if_equiv(result6_2.clone(),
+        assumptions.clone(), Pass9::simplify);
+
+    let result10 = store_if_equiv(result9.clone(),
+        assumptions.clone(), Pass10::simplify);
 
     if config::DEBUG {
         println!("Passes succeeded.");
     }
 
-    println!("{}", result9);
+    println!("{}", result10);
 }
 
 /// A function to clean up bad things like 0<0.

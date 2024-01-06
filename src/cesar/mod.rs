@@ -21,6 +21,10 @@ mod pass6;
 mod pass7;
 // Eighth pass that moves division to multiplication positions accounting for sign.
 mod pass8;
+// Ninth pass that does more aggressive disjunct elimination.
+mod pass9;
+// Tenth pass tries another case of disjunct elimination.
+mod pass10;
 // Rearrange pass that moves a variable to numerator.
 mod rearrange_pass;
 // Z3 utility like checking implication.
