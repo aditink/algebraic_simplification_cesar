@@ -1,6 +1,6 @@
 This repository uses egg (e-graphs good) to perform algebraic simplification of formulas under assumptions.
-
-The tool uses uses the z3 smtlib zyntax for formulas.
+For example, under the assumptions `B>0 and A>0`, it simplifies the formula `(B>(2*e+(-2)*p)^(-1)*v^2 or v<=0) and e>p` to `B*(2*(e-p))>v^2`.
+The tool uses uses the z3 smtlib syntax for formulas.
 
 ## Dependencies
 Written in rust, uses cargo. In linux you can install this with
@@ -25,7 +25,7 @@ This will produce the executable simplify.
 Use the produced binary to simplify formula f against assumptions a with the shell command:
 `./simplify -a <f> <a>`
 For example,
-`./simplify -a "(and (or (> B (* (^ (+ (* 2 e) (* (- 2) p)) (- 1)) (^ v 2))) (<= v 0)) (> e p))" "(and (> A 0) (and (> B 0) (and (> T 0) (>= v 0))))`
+`./simplify -a "(and (or (> B (* (^ (+ (* 2 e) (* (- 2) p)) (- 1)) (^ v 2))) (<= v 0)) (> e p))" "(and (> B 0) (>= v 0))"`
 outputs on the commandline the simplified formula
 `(> (* B (* 2 (- e p))) (^ v 2))`
 
