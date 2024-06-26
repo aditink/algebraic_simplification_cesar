@@ -4,7 +4,9 @@ The tool uses uses the z3 smtlib syntax for formulas.
 
 ## Dependencies
 Written in rust, uses cargo. In linux you can install this with
-```sudo apt-get install cargo```
+`sudo apt-get install cargo`.
+Uses z3-sys, which requires clang. To install this on linux, use
+`sudo apt-get install clang`.
 
 ## Setup
 To clone the project:
