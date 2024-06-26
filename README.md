@@ -42,4 +42,4 @@ To generate a binary, in the folder algebraic_simplification_cesar, run
 This creates the ececutable `simplify` in the folder `target`.
 
 ## More Information
-This tool was designed, to collapse redundant cells resulting from performing (quanitifier elimination)[https://reference.wolfram.com/language/ref/Resolve.html], but can work for other simplification applications as well. It is used by the (CESAR)[https://arxiv.org/abs/2311.02833] tool.
+This tool was designed, to collapse redundant cells resulting from performing [quanitifier elimination](https://reference.wolfram.com/language/ref/Resolve.html), but can work for other simplification applications as well. It is used by the [CESAR](https://arxiv.org/abs/2311.02833) tool.
