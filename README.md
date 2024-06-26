@@ -1,5 +1,5 @@
 This repository uses egg (e-graphs good) to perform algebraic simplification of formulas under assumptions.
-For example, under the assumptions `B>0 and A>0`, it simplifies the formula `(B>(2*e+(-2)*p)^(-1)*v^2 or v<=0) and e>p` to `B*(2*(e-p))>v^2`.
+For example, under the assumptions `B>0 and v>=0`, it simplifies the formula `(B>(2*e+(-2)*p)^(-1)*v^2 or v<=0) and e>p` to `B*(2*(e-p))>v^2`.
 The tool uses uses the z3 smtlib syntax for formulas.
 
 ## Dependencies
