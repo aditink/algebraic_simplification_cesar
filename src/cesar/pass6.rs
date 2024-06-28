@@ -1,5 +1,5 @@
 use crate::cesar::{language::PropLang, z3utils};
-use crate::cesar::config;
+use crate::cesar::simplification::Simplification;
 use egg::*;
 
 /// This pass checks if there are redundant conjuncts.
@@ -11,7 +11,7 @@ fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl Pass6 {
+impl Simplification for Pass6 {
 
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
@@ -62,36 +62,5 @@ impl Pass6 {
             // rewrite!("assumption-false";"?a" => "false"
             //     if neg_implied_by_assumptions()),
         ]
-    }
-
-    pub fn simplify(problem: String, assumptions: String) -> String {
-        unsafe { ASSUMPTIONS = assumptions };
-
-        // Parse the problem, the assumptions, and the rules
-        let problem = problem.parse().unwrap();
-        let rules = Pass6::make_rules();
-
-        // Run the rules
-        let runner = Runner::<PropLang, ()>::default()
-        .with_time_limit(std::time::Duration::from_secs(config::TIMEOUT * 3))
-        .with_node_limit(100000)
-        .with_iter_limit(100000)
-            .with_explanations_enabled().with_expr(&problem).run(&rules);
-
-        // Extract the best expression
-        let extractor = Extractor::new(&runner.egraph, AstSize);
-        let simplified = extractor.find_best(runner.roots[0]);
-
-        // Explain the equivalences
-        // let explanation = runner.explain_equivalence(&problem, &simplified.1).get_flat_string();
-
-        // Print the original problem, the assumptions, the simplified problem,
-        // its cost, and the explanations
-        // println!("Original problem: {}", problem);
-        // println!("Simplified problem: {}", simplified.1);
-        // println!("Cost: {}", simplified.0);
-        // println!("Runner stop reason: {:?}", runner.stop_reason);
-        // println!("Explanations: {}", explanation);
-        simplified.1.to_string()
     }
 }
