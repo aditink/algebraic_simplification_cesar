@@ -23,7 +23,7 @@ trait Simplification {
     }
 
 
-    fn simplify(problem: String, assumptions: String, has_node_limit) -> String {
+    fn simplify(problem: String, assumptions: String, has_node_limit: bool) -> String {
         unsafe {ASSUMPTIONS = assumptions};
         
         // Parse the problem, the assumptions, and the rules.
