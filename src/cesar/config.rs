@@ -2,4 +2,4 @@
 pub static TIMEOUT: u64 = 30;
 
 // If true, print debug information.
-pub static DEBUG: bool = false;
+pub static DEBUG: bool = true;
