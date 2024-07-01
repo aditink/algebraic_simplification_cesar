@@ -16,11 +16,11 @@ use crate::cesar::z3utils;
 
 pub fn simplify(expr: String, assumptions: String) {
     
-    let result1 = Pass1::simplify(expr, assumptions.clone(), false);
-    let result2 = Pass2::simplify(result1, assumptions.clone(), true);
-    let result3 = Pass3::simplify(result2, assumptions.clone(), false);
-    let result4 = Pass4::simplify(result3, assumptions.clone(), true);
-    let result5 = Pass5::simplify(result4, assumptions.clone(), false);
+    let result1 = Pass1::simplify(expr, assumptions.clone(), false, 1);
+    let result2 = Pass2::simplify(result1, assumptions.clone(), true, 1);
+    let result3 = Pass3::simplify(result2, assumptions.clone(), false, 1);
+    let result4 = Pass4::simplify(result3, assumptions.clone(), true, 0);
+    let result5 = Pass5::simplify(result4, assumptions.clone(), false, 1);
 
     println!("{}", result5);
 }
@@ -33,9 +33,9 @@ fn check_equiv(initial: String, fin: String, assumptions: String) -> bool {
     result
 }
 
-fn store_if_equiv(old_expr: String, assumptions: String, has_node_limit: bool,
-    pass: impl Fn(String, String, bool) -> String) -> String {
-    let mut result = pass(old_expr.clone(), assumptions.clone(), has_node_limit);
+fn store_if_equiv(old_expr: String, assumptions: String, has_node_limit: bool, timeout_multiplier: u64,
+    pass: impl Fn(String, String, bool, u64) -> String) -> String {
+    let mut result = pass(old_expr.clone(), assumptions.clone(), has_node_limit, timeout_multiplier);
     // If the result is not equivalent to the original, then return the original.
     if !check_equiv(old_expr.clone(), result.clone(), assumptions.clone()) {
         if config::DEBUG {
@@ -50,38 +50,38 @@ fn store_if_equiv(old_expr: String, assumptions: String, has_node_limit: bool,
 pub fn aggressive_simplify(expr: String, assumptions: String) {
 
     let result1 = store_if_equiv(expr.clone(),
-        assumptions.clone(), false, Pass1::simplify);
+        assumptions.clone(), false, 1, Pass1::simplify);
 
     let result2 = store_if_equiv(result1.clone(),
-        assumptions.clone(), true, Pass2::simplify);
+        assumptions.clone(), true, 1, Pass2::simplify);
         
     let result3 = store_if_equiv(result2.clone(),
-        assumptions.clone(), true, Pass3::simplify);
+        assumptions.clone(), true, 1, Pass3::simplify);
 
     let result4 = store_if_equiv(result3.clone(),
-        assumptions.clone(), true, Pass4::simplify);
+        assumptions.clone(), true, 0, Pass4::simplify); // Disabled for now.
 
     let result5 = store_if_equiv(result4.clone(),
-        assumptions.clone(), false, Pass5::simplify);
+        assumptions.clone(), false, 1, Pass5::simplify);
     
     let result6 = store_if_equiv(result5.clone(),
-        assumptions.clone(), true, Pass6::simplify);
+        assumptions.clone(), true, 3, Pass6::simplify);
 
     let result7 = store_if_equiv(result6.clone(),
-        assumptions.clone(), true, Pass7::simplify);
+        assumptions.clone(), true, 3,  Pass7::simplify);
     
     let result8 = store_if_equiv(result7.clone(),
-        assumptions.clone(), true, Pass8::simplify);
+        assumptions.clone(), true, 3, Pass8::simplify);
 
     // Another round of eliminating conjuncts.
     let result6_2 = store_if_equiv(result8.clone(),
-        assumptions.clone(), true, Pass6::simplify);
+        assumptions.clone(), true, 3, Pass6::simplify);
 
     let result9 = store_if_equiv(result6_2.clone(),
-        assumptions.clone(), true, Pass9::simplify);
+        assumptions.clone(), true, 3, Pass9::simplify);
 
     let result10 = store_if_equiv(result9.clone(),
-        assumptions.clone(), true, Pass10::simplify);
+        assumptions.clone(), true, 3, Pass10::simplify);
 
     if config::DEBUG {
         println!("Passes succeeded.");
@@ -93,7 +93,7 @@ pub fn aggressive_simplify(expr: String, assumptions: String) {
 /// A function to clean up bad things like 0<0.
 pub fn light_simplify(expr: String, assumptions: String) {
     
-    let result = Pass5::simplify(expr, assumptions.clone(), false);
+    let result = Pass5::simplify(expr, assumptions.clone(), false, 1);
 
     println!("{}", result);
 }

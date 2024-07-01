@@ -5,7 +5,7 @@ use egg::*;
 /// This pass does multiplication distribution, i.e. the transformation x*a + x*b = x*(a+b).
 pub struct Pass7;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+//pub static mut ASSUMPTIONS: String =  String::new();
 
 impl Simplification for Pass7 {
 

@@ -5,7 +5,7 @@ use egg::*;
 /// A function to clean up bad things like 0<0.
 pub struct Pass5;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+// pub static mut ASSUMPTIONS: String =  String::new();
 
 impl Simplification for Pass5 {
 
