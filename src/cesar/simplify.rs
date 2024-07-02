@@ -35,6 +35,9 @@ fn check_equiv(initial: String, fin: String, assumptions: String) -> bool {
 fn store_if_equiv(old_expr: String, assumptions: String,
     pass: impl Fn(String, String) -> String) -> String {
     let mut result = pass(old_expr.clone(), assumptions.clone());
+    if config::DEBUG {
+        println!("{}", result.clone());
+    }
     // If the result is not equivalent to the original, then return the original.
     if !check_equiv(old_expr.clone(), result.clone(), assumptions.clone()) {
         if config::DEBUG {
