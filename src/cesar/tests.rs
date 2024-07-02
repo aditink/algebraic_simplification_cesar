@@ -19,3 +19,20 @@ pub fn run_all() {
     println!("Cesar tests took: {:?}", elapsed);
     println!("Cesar tests done.");
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::cesar::simplify;
+
+    #[test]
+    fn test_aggressive_simplify() {
+        // input formula: (and (or (> B (* (^ (+ (* 2 e) (* (- 2) p)) (- 1)) (^ v 2))) (<= v 0)) (> e p))
+        // input assumptions: (and (> A 0) (and (> B 0) (and (> T 0) (>= v 0))))
+        // expected output: (> (* B (* 2 (- e p))) (^ v 2))
+        let problem = "(and (or (> B (* (^ (+ (* 2 e) (* (- 2) p)) (- 1)) (^ v 2))) (<= v 0)) (> e p))".to_string();
+        let assumptions = "(and (> A 0) (and (> B 0) (and (> T 0) (>= v 0))))".to_string();
+        let expected_output = "(> (* B (* 2 (- e p))) (^ v 2))".to_string();
+        let output = simplify::aggressive_simplify(problem, assumptions.clone());
+        assert_eq!(output, expected_output);
+    }
+}

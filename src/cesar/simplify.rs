@@ -46,7 +46,7 @@ fn store_if_equiv(old_expr: String, assumptions: String,
 }
 
 /// simplify + check for general case redundant disjunct and conjuncts.
-pub fn aggressive_simplify(expr: String, assumptions: String) {
+pub fn aggressive_simplify(expr: String, assumptions: String) -> String{
 
     let result1 = store_if_equiv(expr.clone(),
         assumptions.clone(),  Pass1::simplify);
@@ -87,6 +87,8 @@ pub fn aggressive_simplify(expr: String, assumptions: String) {
     }
 
     println!("{}", result10);
+
+    return result10;
 }
 
 /// A function to clean up bad things like 0<0.
