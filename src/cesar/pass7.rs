@@ -24,6 +24,8 @@ impl BasePass for Pass7 {
             rewrite!("minus-rewrite-2"; "(+ ?x (- ?y))" => "(- ?x ?y)"),
             // Get minus outside multiplication.
             rewrite!("minus-distribute"; "(* (- ?x) ?y)" => "(- (* ?y ?x))"),
+            // Times 1 is just the number.
+            rewrite!("times-one"; "(* ?x 1)" => "?x"),
         ]
     }
 }
