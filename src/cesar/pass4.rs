@@ -1,5 +1,5 @@
 use crate::cesar::{language::PropLang, z3utils};
-use crate::cesar::simplification::Simplification;
+use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 pub struct Pass4;
@@ -11,7 +11,7 @@ fn var(s: &str) -> Var {
 }
 
 /// This pass performs aggressive nested or redundancy elimination.
-impl Simplification for Pass4 {
+impl BasePass for Pass4 {
 
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {

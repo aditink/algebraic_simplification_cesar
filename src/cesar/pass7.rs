@@ -1,5 +1,5 @@
 use crate::cesar::language::PropLang;
-use crate::cesar::simplification::Simplification;
+use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// This pass does multiplication distribution, i.e. the transformation x*a + x*b = x*(a+b).
@@ -7,7 +7,7 @@ pub struct Pass7;
 
 //pub static mut ASSUMPTIONS: String =  String::new();
 
-impl Simplification for Pass7 {
+impl BasePass for Pass7 {
 
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {

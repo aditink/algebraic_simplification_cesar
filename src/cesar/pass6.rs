@@ -1,5 +1,5 @@
 use crate::cesar::{language::PropLang, z3utils};
-use crate::cesar::simplification::Simplification;
+use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// This pass checks if there are redundant conjuncts.
@@ -11,7 +11,7 @@ fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl Simplification for Pass6 {
+impl BasePass for Pass6 {
 
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {

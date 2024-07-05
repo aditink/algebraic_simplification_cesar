@@ -4,7 +4,7 @@ use egg::*;
 
 pub static mut ASSUMPTIONS: String = String::new();
 
-pub trait Simplification {
+pub trait BasePass {
     
     fn make_rules() -> Vec<Rewrite<PropLang, ()>>;
 

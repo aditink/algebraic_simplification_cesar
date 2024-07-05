@@ -1,5 +1,5 @@
 use crate::cesar::{language::PropLang, z3utils};
-use crate::cesar::simplification::Simplification;
+use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// This pass does more redundant disjunct elimination.
@@ -12,7 +12,7 @@ fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl Simplification for Pass9 {
+impl BasePass for Pass9 {
 
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {

@@ -10,7 +10,7 @@ use crate::cesar::pass6::Pass6;
 use crate::cesar::pass7::Pass7;
 use crate::cesar::pass8::Pass8;
 use crate::cesar::pass9::Pass9;
-use crate::cesar::simplification::Simplification;
+use crate::cesar::base_pass::BasePass;
 use crate::cesar::rearrange_pass::RearrangePass;
 use crate::cesar::z3utils;
 
@@ -52,52 +52,33 @@ pub fn aggressive_simplify(expr: String, assumptions: String) {
     let result1 = store_if_equiv(expr.clone(),
         assumptions.clone(), false, 1, Pass1::simplify);
 
-    println!("{0}", result1);
-
     let result2 = store_if_equiv(result1.clone(),
         assumptions.clone(), true, 1, Pass2::simplify);
         
-    println!("{0}", result2);
-
     let result3 = store_if_equiv(result2.clone(),
         assumptions.clone(), true, 1, Pass3::simplify);
-    println!("{0}", result3);
-
-    let result4 = store_if_equiv(result3.clone(),
-        assumptions.clone(), true, 0, Pass4::simplify); // Disabled for now.
     
-    println!("{0}", result4);                                        
-
+    let result4 = store_if_equiv(result3.clone(),
+        assumptions.clone(), true, 1, Pass4::simplify); // Disabled for now.
+    
     let result5 = store_if_equiv(result4.clone(),
         assumptions.clone(), false, 1, Pass5::simplify);
-
-    println!("{0}", result5);
 
     let result6 = store_if_equiv(result5.clone(),
         assumptions.clone(), true, 3, Pass6::simplify);
 
-    println!("{0}", result5);
-
     let result7 = store_if_equiv(result6.clone(),
         assumptions.clone(), true, 3,  Pass7::simplify);
 
-    println!("{0}", result7);
-
     let result8 = store_if_equiv(result7.clone(),
         assumptions.clone(), true, 3, Pass8::simplify);
-
-    println!("{0}", result8);
 
     // Another round of eliminating conjuncts.
     let result6_2 = store_if_equiv(result8.clone(),
         assumptions.clone(), true, 3, Pass6::simplify);
 
-    println!("{0}", result6_2);
-
     let result9 = store_if_equiv(result6_2.clone(),
         assumptions.clone(), true, 3, Pass9::simplify);
-
-    println!("{0}", result9);
 
     let result10 = store_if_equiv(result9.clone(),
         assumptions.clone(), true, 3, Pass10::simplify);
