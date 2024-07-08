@@ -18,3 +18,6 @@ Cargo.lock
 
 # JetBrains IDE (RustRover/IdeaJ)
 .idea
+
+# z3 trace
+.z3-trace/
