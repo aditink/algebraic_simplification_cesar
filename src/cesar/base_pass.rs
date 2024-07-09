@@ -4,6 +4,12 @@ use egg::*;
 
 pub static mut ASSUMPTIONS: String = String::new();
 
+/// A trait containing functions for simplification of formulas.
+///
+/// This trait contains the default implementation for the simplify function, which is used by the
+/// passes when simplifyig formulas. 
+/// It also defines the make_rules function, which has unique implementation for all the passes,
+/// which is why it is missing a default implementation.
 pub trait BasePass {
     
     fn make_rules() -> Vec<Rewrite<PropLang, ()>>;
