@@ -1,13 +1,13 @@
 use crate::cesar::language::PropLang;
-use crate::cesar::config;
+use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// A function to clean up bad things like 0<0.
 pub struct Pass5;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+// pub static mut ASSUMPTIONS: String =  String::new();
 
-impl Pass5 {
+impl BasePass for Pass5 {
 
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
@@ -44,24 +44,5 @@ impl Pass5 {
             rewrite!("mul-neg-one-2"; "(+ (* -1 ?a) ?b)" => "(- ?b ?a)"),
             rewrite!("mul-neg-one-2-comm"; "(+ ?b (* -1 ?a))" => "(- ?b ?a)"),
         ]
-    }
-
-    pub fn simplify(problem: String, assumptions: String) -> String {
-        unsafe { ASSUMPTIONS = assumptions };
-
-        // Parse the problem, the assumptions, and the rules
-        let problem = problem.parse().unwrap();
-        let rules = Pass5::make_rules();
-
-        // Run the rules
-        let runner = Runner::<PropLang, ()>::default()
-        .with_time_limit(std::time::Duration::from_secs(config::TIMEOUT))
-            .with_explanations_enabled().with_expr(&problem).run(&rules);
-
-        // Extract the best expression
-        let extractor = Extractor::new(&runner.egraph, AstSize);
-        let simplified = extractor.find_best(runner.roots[0]);
-
-        simplified.1.to_string()
     }
 }
