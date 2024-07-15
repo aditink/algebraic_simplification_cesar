@@ -37,7 +37,7 @@ pub trait BasePass {
         let rules = Self::make_rules();
 
         // Run the rules
-        let runner = Self::get_runner(has_node_limit)
+        let mut runner = Self::get_runner(has_node_limit)
             .with_time_limit(std::time::Duration::from_secs(config::TIMEOUT * timeout_multiplier))
             .with_explanations_enabled()
             .with_expr(&problem).run(&rules);
@@ -45,7 +45,22 @@ pub trait BasePass {
         // Extract the best expression
         let extractor  = Extractor::new(&runner.egraph, AstSize);
         let simplified = extractor.find_best(runner.roots[0]);
+
+        // Debug Info
+        if config::DEBUG {
+            println!();
+            println!("--+--+--+--+");
+            println!("Original Problem: {}", problem);
+            println!("Simplified Problem: {}", simplified.1);
+            println!("Cost of Simplification: {}", simplified.0);
+            println!("Runner Stop Reason: {:?}", runner.stop_reason);
+            // Get the explanataion
+            let explanation = runner.explain_equivalence(&problem, &simplified.1).get_flat_string();
+            println!("Explanations: {}", explanation);
+            println!("--+--+--+--+");
+        }
         
         simplified.1.to_string()
     }
+    
 }
