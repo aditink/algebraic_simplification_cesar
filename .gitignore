@@ -17,8 +17,8 @@ Cargo.lock
 *.pdb
 
 .z3-trace
+simplify
 **/*.rs.swp
 
 # JetBrains IDE (RustRover/IdeaJ)
 .idea
-

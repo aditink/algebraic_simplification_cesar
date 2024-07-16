@@ -8,6 +8,13 @@ Written in rust, uses cargo. In linux you can install this with
 Uses z3-sys, which requires clang. To install this on linux, use
 `sudo apt-get install clang`.
 
+If you are using other linux program like ubuntu, and found error,
+cargo : The term 'cargo' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+
+use
+curl--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+```
+
 ## Setup
 To clone the project:
 ```git clone https://github.com/aditink/algebraic_simplification_cesar.git```
@@ -23,6 +30,8 @@ rm -rf algebraic_simplification_cesar
 ```
 This will produce the executable simplify.
 
+Do not use the last line if you want to change the code. After `rm -rf  algebraic_simplification_cesar` line, you cannot use `cargo build --release` command line.
+
 ## Usage: Binary
 Use the produced binary to simplify formula f against assumptions a with the shell command:
 `./simplify -a <f> <a>`
@@ -30,6 +39,9 @@ For example,
 `./simplify -a "(and (or (> B (* (^ (+ (* 2 e) (* (- 2) p)) (- 1)) (^ v 2))) (<= v 0)) (> e p))" "(and (> B 0) (>= v 0))"`
 outputs on the commandline the simplified formula
 `(> (* B (* 2 (- e p))) (^ v 2))`
+
+This command should be used in whichever folder you have copied the binary `simplify` to.
+If you used the commands in the setup section above, this is the directory into which you cloned the repository.
 
 ## Usage: Recompiling
 To recompile and then simplify formula f against assumptions a, use
@@ -41,7 +53,7 @@ For example,
 ## Generating a Binary
 To generate a binary, in the folder algebraic_simplification_cesar, run
 `cargo build --release`.
-This creates the ececutable `simplify` in the folder `target`.
+This creates the executable `simplify` in the folder `target`.
 
 ## More Information
 This tool was designed to collapse redundant cells resulting from performing [quanitifier elimination](https://reference.wolfram.com/language/ref/Resolve.html), but can work for other simplification applications as well. It is used by the [CESAR](https://arxiv.org/abs/2311.02833) tool.
