@@ -9,9 +9,10 @@ Uses z3-sys, which requires clang. To install this on linux, use
 `sudo apt-get install clang`.
 
 If you are using other linux program like ubuntu, and found error,
-cargo : The term 'cargo' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.
+``cargo : The term cargo' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.``
 
 use
+```
 curl--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 ```
 
