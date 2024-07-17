@@ -3,18 +3,16 @@ For example, under the assumptions `B>0 and v>=0`, it simplifies the formula `(B
 The tool uses uses the z3 smtlib syntax for formulas.
 
 ## Dependencies
-Written in rust, uses cargo. In linux you can install this with
+This project is written in rust, and uses cargo. In linux you can install this with
+`curl--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh`
+or
 `sudo apt-get install cargo`.
-Uses z3-sys, which requires clang. To install this on linux, use
+
+If this does not work or you see an error along the lines of `cargo : The term cargo' is not recognized`, see [instructions for installing cargo](https://doc.rust-lang.org/cargo/getting-started/installation.html).
+
+This repository uses z3-sys, which requires clang. To install clang on linux, use
 `sudo apt-get install clang`.
 
-If you are using other linux program like ubuntu, and found error,
-``cargo : The term cargo' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.``
-
-use
-```
-curl--proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-```
 
 ## Setup
 To clone the project:
