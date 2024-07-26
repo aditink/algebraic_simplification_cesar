@@ -1,5 +1,5 @@
 
-use crate::cesar::config;
+use crate::config;
 use crate::cesar::pass1::Pass1;
 use crate::cesar::pass10::Pass10;
 use crate::cesar::pass2::Pass2;
@@ -12,7 +12,7 @@ use crate::cesar::pass8::Pass8;
 use crate::cesar::pass9::Pass9;
 use crate::cesar::base_pass::BasePass;
 use crate::cesar::rearrange_pass::RearrangePass;
-use crate::cesar::z3utils;
+use crate::z3utils;
 
 pub fn simplify(expr: String, assumptions: String) {
     

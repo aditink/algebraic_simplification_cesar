@@ -1,5 +1,5 @@
-use crate::cesar::{language::PropLang};
-use crate::cesar::config;
+use crate::{language::PropLang};
+use crate::config;
 use egg::*;
 
 pub static mut ASSUMPTIONS: String = String::new();
