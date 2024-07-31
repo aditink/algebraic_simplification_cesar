@@ -29,9 +29,9 @@ define_language! {
         // language items are parsed in order, and we want symbol to
         // be a fallback, so we put it last
         Variable(VariableName),
-        // This is the ultimate fallback, it will parse any operator 
+        // This is the ultimate fallback, it will parse any operator
         // (as a string) and any number of children.
-        // Note that if there were 0 children, the previous branch would have 
+        // Note that if there were 0 children, the previous branch would have
         // succeeded.
         Other(Symbol, Vec<Id>),
     }

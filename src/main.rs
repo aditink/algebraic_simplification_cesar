@@ -10,7 +10,6 @@ fn main() {
     if args.len() > 1 && args[1] == "-c" {
         cesar::tests::run_all();
     }
-
     // If command line flag -s is present, we expect two further arguments:
     // The first is the expression to simplify, the second is assumptions.
     else if args.len() > 1 && args[1] == "-s" {
@@ -22,7 +21,6 @@ fn main() {
         let assumptions = args[3].clone();
         cesar::simplify::simplify(expr, assumptions);
     }
-
     // If the command line flag -l is present, we expect two further arguments:
     // The first is the expression to simplify, the second is assumptions.
     else if args.len() > 1 && args[1] == "-l" {
@@ -34,7 +32,6 @@ fn main() {
         let assumptions = args[3].clone();
         cesar::simplify::light_simplify(expr, assumptions);
     }
-
     // If the command line flag -a is present, we expect two further arguments:
     // The first is the expression to simplify, the second is assumptions.
     else if args.len() > 1 && args[1] == "-a" {
@@ -46,7 +43,6 @@ fn main() {
         let assumptions = args[3].clone();
         cesar::simplify::aggressive_simplify(expr, assumptions);
     }
-
     // If the command line flag -r is present, we expect two further arguments:
     // The first is the expression to rearrange, the second is the numerator variable.
     else if args.len() > 1 && args[1] == "-r" {
@@ -57,9 +53,7 @@ fn main() {
         let expr = args[2].clone();
         let numerator_var = args[3].clone();
         cesar::simplify::rearrange(expr, numerator_var);
-    }
-
-    else{
+    } else {
         println!("Expected a command line flag.");
     }
 }

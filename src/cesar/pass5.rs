@@ -1,5 +1,5 @@
-use crate::cesar::language::PropLang;
 use crate::cesar::base_pass::BasePass;
+use crate::cesar::language::PropLang;
 use egg::*;
 
 /// A function to clean up bad things like 0<0.
@@ -8,10 +8,8 @@ pub struct Pass5;
 // pub static mut ASSUMPTIONS: String =  String::new();
 
 impl BasePass for Pass5 {
-
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
-
         vec![
             // Logic and math rules.
             rewrite!("and-id"; "(and ?a true)" => "?a"),

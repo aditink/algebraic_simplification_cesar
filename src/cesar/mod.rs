@@ -1,6 +1,6 @@
 // Module: cesar exposes tests.rs.
-pub mod tests;
 pub mod simplify;
+pub mod tests;
 // Language definition.
 mod language;
 // Rules for intersection benchmark.

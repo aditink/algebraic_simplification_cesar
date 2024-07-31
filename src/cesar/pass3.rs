@@ -1,32 +1,50 @@
-use crate::cesar::{language::PropLang, z3utils};
 use crate::cesar::base_pass::BasePass;
+use crate::cesar::{language::PropLang, z3utils};
 use egg::*;
 
 pub struct Pass3;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+pub static mut ASSUMPTIONS: String = String::new();
 
 fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
 impl BasePass for Pass3 {
-
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
-
         // Return true if (assumptions and a and (not b)) -> (<= x y).
-        fn redundancy_elimination_or_leq(var_a: Var, var_b: Var, var_x: Var, var_y: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            redundancy_elimination_or_fn(var_a, var_b, var_x, var_y, |x_trm, y_trm| { format!("(<= {} {})", x_trm, y_trm) })
-            }
+        fn redundancy_elimination_or_leq(
+            var_a: Var,
+            var_b: Var,
+            var_x: Var,
+            var_y: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            redundancy_elimination_or_fn(var_a, var_b, var_x, var_y, |x_trm, y_trm| {
+                format!("(<= {} {})", x_trm, y_trm)
+            })
+        }
 
         /// Return true if (assumptions and a and (not b)) -> (> x y).
-        fn redundancy_elimination_or_gt(var_a: Var, var_b: Var, var_x: Var, var_y: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            redundancy_elimination_or_fn(var_a, var_b, var_x, var_y, |x_trm, y_trm| { format!("(> {} {})", x_trm, y_trm) })
-            }
+        fn redundancy_elimination_or_gt(
+            var_a: Var,
+            var_b: Var,
+            var_x: Var,
+            var_y: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            redundancy_elimination_or_fn(var_a, var_b, var_x, var_y, |x_trm, y_trm| {
+                format!("(> {} {})", x_trm, y_trm)
+            })
+        }
 
         // Return true if (assumptions and a and (not b)) -> (f(x, y)).
-        fn redundancy_elimination_or_fn(var_a: Var, var_b: Var, var_x: Var, var_y: Var, op_fn: impl Fn(String, String) -> String) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+        fn redundancy_elimination_or_fn(
+            var_a: Var,
+            var_b: Var,
+            var_x: Var,
+            var_y: Var,
+            op_fn: impl Fn(String, String) -> String,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
             move |egraph, _, subst| {
                 let a = subst[var_a];
                 let b = subst[var_b];
@@ -38,8 +56,10 @@ impl BasePass for Pass3 {
                 let x_trm = extractor.find_best(x).1.to_string();
                 let y_trm = extractor.find_best(y).1.to_string();
                 let assumptions = unsafe { ASSUMPTIONS.clone() };
-                z3utils::imply(format!("(and (and {} (not {})) {})",
-                  a_fml, b_fml, assumptions), op_fn(x_trm, y_trm))
+                z3utils::imply(
+                    format!("(and (and {} (not {})) {})", a_fml, b_fml, assumptions),
+                    op_fn(x_trm, y_trm),
+                )
             }
         }
 
