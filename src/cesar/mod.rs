@@ -31,5 +31,4 @@ mod rearrange_pass;
 mod z3utils;
 // Configuration values.
 mod config;
-// Simplify method.
-mod base_pass;
+
