@@ -15,7 +15,7 @@ use crate::cesar::z3utils;
 
 pub fn simplify(expr: String, assumptions: String) {
     let result1 = Pass1::simplify(expr, assumptions.clone());
-    let result2 = Pass2::simplify(result1, assumptions.clone(), true, 1);
+    let result2 = Pass2::simplify(result1, assumptions.clone());
     let result3 = Pass3::simplify(result2, assumptions.clone(), false, 1);
     let result4 = Pass4::simplify(result3, assumptions.clone(), true, 0);
     let result5 = Pass5::simplify(result4, assumptions.clone(), false, 1);
@@ -61,13 +61,7 @@ fn store_if_equiv(
 pub fn aggressive_simplify(expr: String, assumptions: String) -> String {
     let result1 = store_if_equiv(expr.clone(), assumptions.clone(), Pass1::simplify);
 
-    let result2 = store_if_equiv(
-        result1.clone(),
-        assumptions.clone(),
-        true,
-        1,
-        Pass2::simplify,
-    );
+    let result2 = store_if_equiv(result1.clone(), assumptions.clone(), Pass2::simplify);
 
     let result3 = store_if_equiv(
         result2.clone(),

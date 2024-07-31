@@ -1,6 +1,6 @@
 use crate::base;
-use crate::config;
 use crate::cesar::{language::PropLang, z3utils};
+use crate::config;
 use egg::*;
 
 pub struct Pass1;
@@ -212,7 +212,7 @@ impl Pass1 {
                 if redundancy_elimination_gt(var("?b"), var("?a"), var("?x"), var("?y"))),
         ]
     }
-    
+
     /// This function returns the simplification for a given formula.
     ///
     /// # Parameters

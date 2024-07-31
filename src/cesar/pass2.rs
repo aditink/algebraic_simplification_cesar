@@ -1,5 +1,6 @@
-use crate::cesar::base_pass::BasePass;
+use crate::base;
 use crate::cesar::{language::PropLang, z3utils};
+use crate::config;
 use egg::*;
 
 pub struct Pass2;
@@ -10,7 +11,7 @@ fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl BasePass for Pass2 {
+impl Pass2 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
         fn _implied_by_assumptions() -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
@@ -256,5 +257,22 @@ impl BasePass for Pass2 {
                 if redundancy_elimination_leq(var("?a"), var("?b"), var("?x"), var("?y"))
                 if redundancy_elimination_gt(var("?b"), var("?a"), var("?x"), var("?y"))),
         ]
+    }
+
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem.
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    fn simplify(problem: String, assumptions: String) -> String {
+        unsafe { ASSUMPTIONS = assumptions };
+
+        base::simplify(problem, true, config::TIMEOUT, Self::make_rules())
     }
 }
