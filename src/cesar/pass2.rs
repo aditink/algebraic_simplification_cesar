@@ -1,6 +1,6 @@
 use crate::cesar::base;
-use crate::cesar::{language::PropLang, z3utils};
 use crate::cesar::config;
+use crate::cesar::{language::PropLang, z3utils};
 use egg::*;
 
 pub struct Pass2;
