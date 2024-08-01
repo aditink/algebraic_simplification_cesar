@@ -4,6 +4,8 @@ mod cesar;
 fn main() {
     // More info when there are errors.
     env::set_var("RUST_BACKTRACE", "full");
+    env::set_var("RUST_LOG", "egg=debug");
+    env_logger::init();
 
     // If command line flag -c is present, run cesar tests.
     let args: Vec<String> = std::env::args().collect();
