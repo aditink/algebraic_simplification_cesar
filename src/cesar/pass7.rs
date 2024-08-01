@@ -31,7 +31,7 @@ impl Pass7 {
     /// # Parameters
     ///
     /// - 'problem': The problem to be simplified. Must be a `String` value.
-    /// - 'assumptions': The assumptions to be associated with the problem.
+    /// - 'assumptions': The assumptions to be associated with the problem. unused for Pass7
     ///
     /// # Returns
     ///

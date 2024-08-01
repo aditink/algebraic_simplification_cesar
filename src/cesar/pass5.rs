@@ -47,6 +47,7 @@ impl Pass5 {
     /// # Parameters
     ///
     /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem. Unused for Pass5.
     ///
     /// # Returns
     ///
