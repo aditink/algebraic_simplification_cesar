@@ -22,3 +22,6 @@ simplify
 
 # JetBrains IDE (RustRover/IdeaJ)
 .idea
+
+# Python virtual environment
+.env
