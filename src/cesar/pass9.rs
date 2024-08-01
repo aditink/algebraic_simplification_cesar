@@ -1,4 +1,5 @@
-use crate::cesar::base_pass::BasePass;
+use crate::cesar::base;
+use crate::cesar::config;
 use crate::cesar::{language::PropLang, z3utils};
 use egg::*;
 
@@ -12,7 +13,7 @@ fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl BasePass for Pass9 {
+impl Pass9 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
         fn implies_lst(
@@ -47,5 +48,21 @@ impl BasePass for Pass9 {
             rewrite!("or-elim-2"; "(or (and (or ?b ?a) ?c) (and ?a ?d))" => "(or (and ?b ?c) (and ?a ?d))"
                 if implies_lst(vec![var("?c")], var("?d"))),
         ]
+    }
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem.
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    pub fn simplify(problem: String, assumptions: String) -> String {
+        unsafe { ASSUMPTIONS = assumptions };
+
+        base::simplify(problem, true, config::LONG_TIMEOUT, Self::make_rules())
     }
 }

@@ -99,7 +99,7 @@ impl Pass3 {
     ///
     /// A `String` of the simplified problem.
 
-    fn simplify(problem: String, assumptions: String) -> String {
+    pub fn simplify(problem: String, assumptions: String) -> String {
         unsafe { ASSUMPTIONS = assumptions };
 
         base::simplify(problem, true, config::TIMEOUT, Self::make_rules())

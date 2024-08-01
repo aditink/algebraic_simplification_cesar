@@ -223,8 +223,8 @@ impl Pass1 {
     /// # Returns
     ///
     /// A `String` of the simplified problem.
-    fn simplify(problem: String, assumptions: String) -> String {
+    pub fn simplify(problem: String, assumptions: String) -> String {
         unsafe { ASSUMPTIONS = assumptions };
-        base::simplify(problem, false, config::TIMEOUT, Self::make_rules)
+        base::simplify(problem, false, config::TIMEOUT, Self::make_rules())
     }
 }

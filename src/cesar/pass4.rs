@@ -1,4 +1,5 @@
-use crate::cesar::base_pass::BasePass;
+use crate::cesar::base;
+use crate::cesar::config;
 use crate::cesar::{language::PropLang, z3utils};
 use egg::*;
 
@@ -11,7 +12,7 @@ fn var(s: &str) -> Var {
 }
 
 /// This pass performs aggressive nested or redundancy elimination.
-impl BasePass for Pass4 {
+impl Pass4 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
         // Return true if (assumptions and a) -> (or b c).
@@ -98,5 +99,21 @@ impl BasePass for Pass4 {
             rewrite!("redundant-disjunct-4--intersperse-comm-both"; "(and (or (and (or ?a ?b) ?c) ?e) ?d)" => "(and (or (and ?a ?c) ?e) ?d)"
                 if implies_lst(vec![var("?b"), var("?c"), var("?d")], var("?a"))),
         ]
+    }
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem.
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    pub fn simplify(problem: String, assumptions: String) -> String {
+        unsafe { ASSUMPTIONS = assumptions };
+
+        base::simplify(problem, true, config::SHORT_TIMEOUT, Self::make_rules())
     }
 }
