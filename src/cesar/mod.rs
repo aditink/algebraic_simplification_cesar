@@ -1,6 +1,6 @@
 // Module: cesar exposes tests.rs.
-pub mod tests;
 pub mod simplify;
+pub mod tests;
 // Language definition.
 mod language;
 // Rules for intersection benchmark.
@@ -31,5 +31,5 @@ mod rearrange_pass;
 mod z3utils;
 // Configuration values.
 mod config;
-// Simplify method.
-mod base_pass;
+// Base functions
+mod base;

@@ -1,22 +1,19 @@
-use crate::cesar::language::PropLang;
 use crate::cesar::config;
+use crate::cesar::language::PropLang;
 use egg::*;
 
 /// Moves all instances of numerator_var to numerator, assuming that is is >0.
 pub struct RearrangePass;
 
-pub static mut NUMERATOR_VAR: String =  String::new();
+pub static mut NUMERATOR_VAR: String = String::new();
 
 fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
 impl RearrangePass {
-
-
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
-        
         fn is_numerator_var(var: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
             move |egraph, _, subst| {
                 let numerator_var = unsafe { NUMERATOR_VAR.clone() };
@@ -26,7 +23,7 @@ impl RearrangePass {
                 var_fml == numerator_var
             }
         }
-    
+
         vec![
             // Moving numerator_var to numerator.
             rewrite!("eq-numerator"; "(= ?x (* (^ ?v (- 1)) ?y))" => "(= (* ?x ?v) ?y)"
@@ -62,7 +59,7 @@ impl RearrangePass {
         ]
     }
 
-    /// Rewrite problem with all instances of numerator_var moved to numerator, 
+    /// Rewrite problem with all instances of numerator_var moved to numerator,
     /// assuming that numerator_var>0.
     pub fn rearrange(problem: String, numerator_var: String) -> String {
         unsafe { NUMERATOR_VAR = numerator_var };
@@ -73,8 +70,10 @@ impl RearrangePass {
 
         // Run the rules
         let runner = Runner::<PropLang, ()>::default()
-        .with_time_limit(std::time::Duration::from_secs(config::TIMEOUT))
-            .with_explanations_enabled().with_expr(&problem).run(&rules);
+            .with_time_limit(std::time::Duration::from_secs(config::TIMEOUT))
+            .with_explanations_enabled()
+            .with_expr(&problem)
+            .run(&rules);
 
         // Extract the best expression
         let extractor = Extractor::new(&runner.egraph, AstSize);
