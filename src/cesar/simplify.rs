@@ -30,7 +30,11 @@ fn check_equiv(initial: String, fin: String, assumptions: String) -> bool {
     result
 }
 
-fn store_if_equiv(old_expr: String, assumptions: String, pass: impl Fn(String, String) -> String) -> String {
+fn store_if_equiv(
+    old_expr: String,
+    assumptions: String,
+    pass: impl Fn(String, String) -> String,
+) -> String {
     let mut result = pass(old_expr.clone(), assumptions.clone());
     if config::DEBUG {
         println!("Simplify pass failed.");
@@ -45,67 +49,30 @@ fn store_if_equiv(old_expr: String, assumptions: String, pass: impl Fn(String, S
     result
 }
 
-
 /// simplify + check for general case redundant disjunct and conjuncts.
 pub fn aggressive_simplify(expr: String, assumptions: String) -> String {
     let result1 = store_if_equiv(expr.clone(), assumptions.clone(), Pass1::simplify);
 
     let result2 = store_if_equiv(result1.clone(), assumptions.clone(), Pass2::simplify);
 
-    let result3 = store_if_equiv(
-        result2.clone(),
-        assumptions.clone(),
-        Pass3::simplify,
-    );
+    let result3 = store_if_equiv(result2.clone(), assumptions.clone(), Pass3::simplify);
 
-    let result4 = store_if_equiv(
-        result3.clone(),
-        assumptions.clone(),
-        Pass4::simplify,
-    ); 
+    let result4 = store_if_equiv(result3.clone(), assumptions.clone(), Pass4::simplify);
 
-    let result5 = store_if_equiv(
-        result4.clone(),
-        assumptions.clone(),
-        Pass5::simplify,
-    );
+    let result5 = store_if_equiv(result4.clone(), assumptions.clone(), Pass5::simplify);
 
-    let result6 = store_if_equiv(
-        result5.clone(),
-        assumptions.clone(),
-        Pass6::simplify,
-    );
+    let result6 = store_if_equiv(result5.clone(), assumptions.clone(), Pass6::simplify);
 
-    let result7 = store_if_equiv(
-        result6.clone(),
-        assumptions.clone(),
-        Pass7::simplify,
-    );
+    let result7 = store_if_equiv(result6.clone(), assumptions.clone(), Pass7::simplify);
 
-    let result8 = store_if_equiv(
-        result7.clone(),
-        assumptions.clone(),
-        Pass8::simplify,
-    );
+    let result8 = store_if_equiv(result7.clone(), assumptions.clone(), Pass8::simplify);
 
     // Another round of eliminating conjuncts.
-    let result6_2 = store_if_equiv(
-        result8.clone(),
-        assumptions.clone(),
-        Pass6::simplify,
-    );
+    let result6_2 = store_if_equiv(result8.clone(), assumptions.clone(), Pass6::simplify);
 
-    let result9 = store_if_equiv(
-        result6_2.clone(),
-        assumptions.clone(),
-        Pass9::simplify,
-    );
+    let result9 = store_if_equiv(result6_2.clone(), assumptions.clone(), Pass9::simplify);
 
-    let result10 = store_if_equiv(
-        result9.clone(),
-        assumptions.clone(),
-        Pass10::simplify,
-    );
+    let result10 = store_if_equiv(result9.clone(), assumptions.clone(), Pass10::simplify);
 
     if config::DEBUG {
         println!("Passes succeeded.");

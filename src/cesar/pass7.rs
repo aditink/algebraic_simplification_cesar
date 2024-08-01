@@ -1,5 +1,5 @@
 use crate::cesar::base;
-use crate::cesar::config; 
+use crate::cesar::config;
 use crate::cesar::language::PropLang;
 use egg::*;
 

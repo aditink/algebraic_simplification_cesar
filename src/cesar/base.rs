@@ -61,7 +61,8 @@ pub fn simplify(
     let mut runner = get_runner(has_node_limit)
         .with_time_limit(Duration::from_secs(timeout))
         .with_explanations_enabled()
-        .with_expr(&problem).run(&rules);
+        .with_expr(&problem)
+        .run(&rules);
 
     // Helps to extract the most simplified formula from the graph.
     let extractor = Extractor::new(&runner.egraph, AstSize);
