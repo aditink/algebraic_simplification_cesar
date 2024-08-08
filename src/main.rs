@@ -1,6 +1,15 @@
 use std::env;
 mod cesar;
 
+pub mod tests;
+pub mod simplify;
+// Configuration values.
+mod config;
+// Z3 utility like checking implication.
+mod z3utils;
+// Language definition.
+mod language;
+
 fn main() {
     // More info when there are errors.
     env::set_var("RUST_BACKTRACE", "full");
@@ -8,7 +17,7 @@ fn main() {
     // If command line flag -c is present, run cesar tests.
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 && args[1] == "-c" {
-        cesar::tests::run_all();
+        tests::run_all();
     }
 
     // If command line flag -s is present, we expect two further arguments:
@@ -20,7 +29,7 @@ fn main() {
         }
         let expr = args[2].clone();
         let assumptions = args[3].clone();
-        cesar::simplify::simplify(expr, assumptions);
+        simplify::simplify(expr, assumptions);
     }
 
     // If the command line flag -l is present, we expect two further arguments:
@@ -32,7 +41,7 @@ fn main() {
         }
         let expr = args[2].clone();
         let assumptions = args[3].clone();
-        cesar::simplify::light_simplify(expr, assumptions);
+        simplify::light_simplify(expr, assumptions);
     }
 
     // If the command line flag -a is present, we expect two further arguments:
@@ -44,7 +53,7 @@ fn main() {
         }
         let expr = args[2].clone();
         let assumptions = args[3].clone();
-        cesar::simplify::aggressive_simplify(expr, assumptions);
+        simplify::aggressive_simplify(expr, assumptions);
     }
 
     // If the command line flag -r is present, we expect two further arguments:
@@ -56,7 +65,7 @@ fn main() {
         }
         let expr = args[2].clone();
         let numerator_var = args[3].clone();
-        cesar::simplify::rearrange(expr, numerator_var);
+        simplify::rearrange(expr, numerator_var);
     }
 
     else{
