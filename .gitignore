@@ -22,3 +22,6 @@ simplify
 
 # JetBrains IDE (RustRover/IdeaJ)
 .idea
+
+# Visual Studio Code
+.vscode
