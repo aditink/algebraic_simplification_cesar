@@ -12,6 +12,11 @@ rand = "0.8.5"
 sequential-test = "0.2.4"
 z3 = {version="0.12", features = ["static-link-z3"]}
 z3-sys = {version="0.8", features = ["static-link-z3"]}
+pyo3 = { version = "0.15", features = ["extension-module"] }
 
 [dev-dependencies]
 ordered-float = "3.0.0"
+
+[lib]
+name = "simplify"
+crate-type = ["cdylib"]
