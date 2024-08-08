@@ -1,5 +1,5 @@
-use crate::cesar::language::PropLang;
-use crate::cesar::config;
+use crate::language::PropLang;
+use crate::config;
 use egg::*;
 
 /// Moves all instances of numerator_var to numerator, assuming that is is >0.
