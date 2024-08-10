@@ -54,5 +54,66 @@ To generate a binary, in the folder algebraic_simplification_cesar, run
 `cargo build --release`.
 This creates the executable `simplify` in the folder `target`.
 
+## Calling Rust from Python
+Before you begin, ensure you have the following installed:
+- Python
+- Rust and Cargo (Rust's package manager)
+- Maturin (for building and publishing Rust crates as Python packages)
+
+### Step 1: Setting Up Environment
+
+Create a virtual environment:
+```
+python3 -m venv .env  
+source .env/bin/activate
+```
+### Step 2: Installing Maturin
+```
+pip install maturin
+```
+
+Inside the directory, now run `maturin init`. This will generate the new package source. When given the choice of bindings to use, select pyo3 bindings:
+```
+$ maturin init
+✔ 🤷 Which kind of bindings to use?
+  📖 Documentation: https://maturin.rs/bindings.html · pyo3
+  ✨ Done! Initialized project /your/path
+```
+
+### Step 3: Building and Installing the Python Module
+
+This will build the package and install it into the Python virtualenv previously created and activated. The package is then ready to be used from `python`:
+```
+maturin develop
+```
+
+An example output would be:
+```
+📦 Including license file "/path/to/project/LICENSE"
+🔗 Found pyo3 bindings
+🐍 Found CPython 3.12 at /path/to/project/.env/bin/python
+📡 Using build options features from pyproject.toml
+    Finished `dev` profile [unoptimized + debuginfo] target(s) in 0.21s
+📦 Built wheel for CPython 3.12 to /var/folders/.../algebraic_simplification_cesar-0.1.0-cp312-cp312-macosx_10_12_x86_64.whl
+✏️  Setting installed package as editable
+🛠 Installed algebraic_simplification_cesar-0.1.0
+```
+
+### Step 4: Using the Python Module
+
+Open a Python Shell:
+```
+python
+```
+Import and Use the Module:
+```
+import simplify
+simplify.aggressive_simplify("formula","assumption")
+```
+
+### References
+
+For more detailed information on using PyO3, refer to the [official PyO3 guide](https://github.com/PyO3/pyo3).
+
 ## More Information
 This tool was designed to collapse redundant cells resulting from performing [quanitifier elimination](https://reference.wolfram.com/language/ref/Resolve.html), but can work for other simplification applications as well. It is used by the [CESAR](https://arxiv.org/abs/2311.02833) tool.
