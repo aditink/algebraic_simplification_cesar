@@ -122,7 +122,6 @@ simplify.aggressive_simplify("formula","assumption")
 
 For more detailed information on using PyO3, refer to the [official PyO3 guide](https://github.com/PyO3/pyo3).
 
-=======
->>>>>>> 64dad5acc1f7b6a55116882ac25362e6a60898fb
+
 ## More Information
 This tool was designed to collapse redundant cells resulting from performing [quanitifier elimination](https://reference.wolfram.com/language/ref/Resolve.html), but can work for other simplification applications as well. It is used by the [CESAR](https://arxiv.org/abs/2311.02833) tool.
