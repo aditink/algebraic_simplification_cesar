@@ -1,4 +1,4 @@
-use crate::cesar::language::PropLang;
+use crate::language::PropLang;
 use crate::cesar::base_pass::BasePass;
 use egg::*;
 
