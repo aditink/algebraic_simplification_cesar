@@ -16,7 +16,7 @@ fn aggressive_simplify(expr: String, assumptions: String) -> PyResult<()> {
 }
 
 #[pymodule]
-fn simplify(_py: Python, m: &PyModule) -> PyResult<()> {
+fn simplify(m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(light_simplify, m)?)?;
     m.add_function(wrap_pyfunction!(aggressive_simplify, m)?)?;
     Ok(())
