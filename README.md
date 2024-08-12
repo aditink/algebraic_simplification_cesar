@@ -62,9 +62,9 @@ This creates the executable `simplify` in the folder `target`.
 
 ## Calling Rust from Python
 Before you begin, ensure you have the following installed:
-- Python
-- Rust and Cargo (Rust's package manager)
-- Maturin (for building and publishing Rust crates as Python packages)
+- Python 3.7 and up (CPython, PyPy, and GraalPy)
+- Rust 1.63 and up
+- Cargo (Rust's package manager)
 
 ### Step 1: Setting Up Environment
 
