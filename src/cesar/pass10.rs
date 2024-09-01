@@ -1,41 +1,93 @@
+use crate::cesar::base;
+use crate::config;
 use crate::{language::PropLang, z3utils};
-use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// Another disjunct elimination heuristic that rarely applies but gives a lot of simplification when it does:
 /// ?x<?y & ?b | ?x>=?y & ?c -> ?b if  assumptions -> (b equiv original)
 pub struct Pass10;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+pub static mut ASSUMPTIONS: String = String::new();
 
 fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl BasePass for Pass10 {
-
+impl Pass10 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
-
-        fn equiv_lt(var_x: Var, var_y:Var, var_b:Var, var_c:Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            equiv(var_x, var_y, var_b, var_c, |x, y| { format!("(< {} {})", x, y) }, |x, y| { format!("(>= {} {})", x, y) })
+        fn equiv_lt(
+            var_x: Var,
+            var_y: Var,
+            var_b: Var,
+            var_c: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            equiv(
+                var_x,
+                var_y,
+                var_b,
+                var_c,
+                |x, y| format!("(< {} {})", x, y),
+                |x, y| format!("(>= {} {})", x, y),
+            )
         }
 
-        fn equiv_gt(var_x: Var, var_y:Var, var_b:Var, var_c:Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            equiv(var_x, var_y, var_b, var_c, |x, y| { format!("(> {} {})", x, y) }, |x, y| { format!("(<= {} {})", x, y) })
+        fn equiv_gt(
+            var_x: Var,
+            var_y: Var,
+            var_b: Var,
+            var_c: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            equiv(
+                var_x,
+                var_y,
+                var_b,
+                var_c,
+                |x, y| format!("(> {} {})", x, y),
+                |x, y| format!("(<= {} {})", x, y),
+            )
         }
 
-        fn equiv_leq(var_x: Var, var_y:Var, var_b:Var, var_c:Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            equiv(var_x, var_y, var_b, var_c, |x, y| { format!("(<= {} {})", x, y) }, |x, y| { format!("(> {} {})", x, y) })
+        fn equiv_leq(
+            var_x: Var,
+            var_y: Var,
+            var_b: Var,
+            var_c: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            equiv(
+                var_x,
+                var_y,
+                var_b,
+                var_c,
+                |x, y| format!("(<= {} {})", x, y),
+                |x, y| format!("(> {} {})", x, y),
+            )
         }
 
-        fn equiv_geq(var_x: Var, var_y:Var, var_b:Var, var_c:Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            equiv(var_x, var_y, var_b, var_c, |x, y| { format!("(>= {} {})", x, y) }, |x, y| { format!("(< {} {})", x, y) })
+        fn equiv_geq(
+            var_x: Var,
+            var_y: Var,
+            var_b: Var,
+            var_c: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            equiv(
+                var_x,
+                var_y,
+                var_b,
+                var_c,
+                |x, y| format!("(>= {} {})", x, y),
+                |x, y| format!("(< {} {})", x, y),
+            )
         }
 
-        fn equiv(var_x: Var, var_y:Var, var_b:Var, var_c:Var,
-            op_fn_1: impl Fn(String, String) -> String, op_fn_2: impl Fn(String, String) -> String)
-            -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+        fn equiv(
+            var_x: Var,
+            var_y: Var,
+            var_b: Var,
+            var_c: Var,
+            op_fn_1: impl Fn(String, String) -> String,
+            op_fn_2: impl Fn(String, String) -> String,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
             move |egraph, _, subst| {
                 let x = subst[var_x];
                 let y = subst[var_y];
@@ -49,7 +101,10 @@ impl BasePass for Pass10 {
                 let assumptions = unsafe { ASSUMPTIONS.clone() };
                 let inequality_1 = op_fn_1(x_trm.clone(), y_trm.clone());
                 let inequality_2 = op_fn_2(x_trm, y_trm);
-                let original_fml = format!("(or (and {} {}) (and {} {}))", inequality_1, b_fml, inequality_2, c_fml);
+                let original_fml = format!(
+                    "(or (and {} {}) (and {} {}))",
+                    inequality_1, b_fml, inequality_2, c_fml
+                );
                 let equiv_fml = format!("(= {} {})", original_fml, b_fml);
                 z3utils::imply(assumptions, equiv_fml)
             }
@@ -79,5 +134,21 @@ impl BasePass for Pass10 {
             rewrite!("and-comm-lt"; "(and ?b (< ?x ?y))" => "(and (< ?x ?y) ?b)"),
             rewrite!("and-comm-gt"; "(and ?b (> ?x ?y))" => "(and (> ?x ?y) ?b)"),
         ]
+    }
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem.
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    pub fn simplify(problem: String, assumptions: String) -> String {
+        unsafe { ASSUMPTIONS = assumptions };
+
+        base::simplify(problem, true, config::LONG_TIMEOUT, Self::make_rules())
     }
 }

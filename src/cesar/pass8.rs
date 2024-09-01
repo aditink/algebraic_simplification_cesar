@@ -1,47 +1,61 @@
+use crate::cesar::base;
+use crate::config;
 use crate::{language::PropLang, z3utils};
-use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// This pass moves division to multiplication positions accounting for sign.
 pub struct Pass8;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+pub static mut ASSUMPTIONS: String = String::new();
 
 fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl BasePass for Pass8 {
-
+impl Pass8 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
-
-        fn is_non_zero(var_ante: Vec<Var>, var_b: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            check_b_cond(var_ante, var_b, |b_trm| { format!("(distinct {} 0)", b_trm) })
+        fn is_non_zero(
+            var_ante: Vec<Var>,
+            var_b: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            check_b_cond(var_ante, var_b, |b_trm| format!("(distinct {} 0)", b_trm))
         }
 
-        fn less_than_zero(var_ante: Vec<Var>, var_b: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            check_b_cond(var_ante, var_b, |b_trm| { format!("(< {} 0)", b_trm) })
+        fn less_than_zero(
+            var_ante: Vec<Var>,
+            var_b: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            check_b_cond(var_ante, var_b, |b_trm| format!("(< {} 0)", b_trm))
         }
 
         // Return true if (assumptions and (AND_i a_i)) -> b>0.
-        fn greater_than_zero(var_ante: Vec<Var>, var_b: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
-            check_b_cond(var_ante, var_b, |b_trm| { format!("(> {} 0)", b_trm) })
+        fn greater_than_zero(
+            var_ante: Vec<Var>,
+            var_b: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+            check_b_cond(var_ante, var_b, |b_trm| format!("(> {} 0)", b_trm))
         }
 
         // Return true if (assumptions and (AND_i a_i)) -> b>0.
-        fn check_b_cond(var_ante: Vec<Var>, var_b: Var, b_cond: impl Fn(String) -> String) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+        fn check_b_cond(
+            var_ante: Vec<Var>,
+            var_b: Var,
+            b_cond: impl Fn(String) -> String,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
             move |egraph, _, subst| {
                 let antes = var_ante.iter().map(|v| subst[*v]).collect::<Vec<Id>>();
                 let b = subst[var_b];
                 let extractor = Extractor::new(&egraph, AstSize);
-                let ante_fml = antes.iter()
+                let ante_fml = antes
+                    .iter()
                     .map(|a| extractor.find_best(*a).1)
                     .map(|f| f.to_string());
-                let ante_fml_str = ante_fml.fold("true".to_string(),
-                    |acc, f| format!("(and {} {})", acc, f)).to_string();
+                let ante_fml_str = ante_fml
+                    .fold("true".to_string(), |acc, f| format!("(and {} {})", acc, f))
+                    .to_string();
                 let b_trm = extractor.find_best(b).1.to_string();
-                let b_fml = b_cond(b_trm);   
+                let b_fml = b_cond(b_trm);
                 let assumptions = unsafe { ASSUMPTIONS.clone() };
                 z3utils::imply(format!("(and {} {})", ante_fml_str, assumptions), b_fml)
             }
@@ -68,7 +82,7 @@ impl BasePass for Pass8 {
             rewrite!("geq-numerator-neg"; "(>= ?x (* (^ ?v (- 1)) ?y))" => "(<= (* ?x ?v) ?y)"
                 if less_than_zero(vec![], var("?v"))),
             rewrite!("leq-numerator-neg"; "(<= ?x (* (^ ?v (- 1)) ?y))" => "(>= (* ?x ?v) ?y)"
-                if less_than_zero(vec![], var("?v"))), 
+                if less_than_zero(vec![], var("?v"))),
             // With conjuncts in context.
             rewrite!("eq-numerator-conj"; "(and (= ?x (* (^ ?v (- 1)) ?y)) ?a)" => "(and (= (* ?x ?v) ?y) ?a)"
                 if is_non_zero(vec![var("?a")], var("?v"))),
@@ -94,5 +108,21 @@ impl BasePass for Pass8 {
             // And commutes.
             rewrite!("and-comm"; "(and ?x ?y)" => "(and ?y ?x)"),
         ]
+    }
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem.
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    pub fn simplify(problem: String, assumptions: String) -> String {
+        unsafe { ASSUMPTIONS = assumptions };
+
+        base::simplify(problem, true, config::LONG_TIMEOUT, Self::make_rules())
     }
 }

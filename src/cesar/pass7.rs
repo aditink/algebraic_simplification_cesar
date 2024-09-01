@@ -1,14 +1,12 @@
+use crate::cesar::base;
+use crate::config;
 use crate::language::PropLang;
-use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// This pass does multiplication distribution, i.e. the transformation x*a + x*b = x*(a+b).
 pub struct Pass7;
 
-//pub static mut ASSUMPTIONS: String =  String::new();
-
-impl BasePass for Pass7 {
-
+impl Pass7 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
         vec![
@@ -27,5 +25,19 @@ impl BasePass for Pass7 {
             // Times 1 is just the number.
             rewrite!("times-one"; "(* ?x 1)" => "?x"),
         ]
+    }
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem. unused for Pass7
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    pub fn simplify(problem: String, _assumptions: String) -> String {
+        base::simplify(problem, true, config::LONG_TIMEOUT, Self::make_rules())
     }
 }
