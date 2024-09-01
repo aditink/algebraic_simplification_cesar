@@ -22,6 +22,5 @@ pub mod pass9;
 // Tenth pass tries another case of disjunct elimination.
 pub mod pass10;
 // Rearrange pass that moves a variable to numerator.
+pub mod base;
 pub mod rearrange_pass;
-// Simplify method.
-pub mod base_pass;

@@ -1,39 +1,42 @@
+use crate::cesar::base;
+use crate::config;
 use crate::{language::PropLang, z3utils};
-use crate::cesar::base_pass::BasePass;
 use egg::*;
 
 /// This pass checks if there are redundant conjuncts.
 pub struct Pass6;
 
-pub static mut ASSUMPTIONS: String =  String::new();
+pub static mut ASSUMPTIONS: String = String::new();
 
 fn var(s: &str) -> Var {
     s.parse().unwrap()
 }
 
-impl BasePass for Pass6 {
-
+impl Pass6 {
     // reference: https://docs.rs/egg/latest/egg/macro.rewrite.html.
     fn make_rules() -> Vec<Rewrite<PropLang, ()>> {
-
         // Return true if (assumptions and (AND_i a_i)) -> (b).
-        fn implies_lst(var_ante: Vec<Var>, var_b: Var) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
+        fn implies_lst(
+            var_ante: Vec<Var>,
+            var_b: Var,
+        ) -> impl Fn(&mut EGraph<PropLang, ()>, Id, &Subst) -> bool {
             move |egraph, _, subst| {
                 let antes = var_ante.iter().map(|v| subst[*v]).collect::<Vec<Id>>();
                 let b = subst[var_b];
                 let extractor = Extractor::new(&egraph, AstSize);
-                let ante_fml = antes.iter()
+                let ante_fml = antes
+                    .iter()
                     .map(|a| extractor.find_best(*a).1)
                     .map(|f| f.to_string());
-                let ante_fml_str = ante_fml.fold("true".to_string(),
-                    |acc, f| format!("(and {} {})", acc, f)).to_string();
+                let ante_fml_str = ante_fml
+                    .fold("true".to_string(), |acc, f| format!("(and {} {})", acc, f))
+                    .to_string();
                 let b_fml = extractor.find_best(b).1.to_string();
                 let assumptions = unsafe { ASSUMPTIONS.clone() };
                 z3utils::imply(format!("(and {} {})", ante_fml_str, assumptions), b_fml)
             }
         }
 
-        
         vec![
             // Logic rules.
             rewrite!("and-id"; "(and ?a true)" => "?a"),
@@ -62,5 +65,21 @@ impl BasePass for Pass6 {
             // rewrite!("assumption-false";"?a" => "false"
             //     if neg_implied_by_assumptions()),
         ]
+    }
+    /// This function returns the simplification for a given formula.
+    ///
+    /// # Parameters
+    ///
+    /// - 'problem': The problem to be simplified. Must be a `String` value.
+    /// - 'assumptions': The assumptions to be associated with the problem.
+    ///
+    /// # Returns
+    ///
+    /// A `String` of the simplified problem.
+
+    pub fn simplify(problem: String, assumptions: String) -> String {
+        unsafe { ASSUMPTIONS = assumptions };
+
+        base::simplify(problem, true, config::LONG_TIMEOUT, Self::make_rules())
     }
 }
