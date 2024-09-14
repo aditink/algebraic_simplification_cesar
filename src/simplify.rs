@@ -36,9 +36,6 @@ fn store_if_equiv(
     pass: impl Fn(String, String) -> String,
 ) -> String {
     let mut result = pass(old_expr.clone(), assumptions.clone());
-    if config::DEBUG {
-        println!("Simplify pass failed.");
-    }
 
     if !check_equiv(old_expr.clone(), result.clone(), assumptions.clone()) {
         if config::DEBUG {

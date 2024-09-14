@@ -24,6 +24,24 @@ To generate a binary, in the folder algebraic_simplification_cesar, run
 `cargo build --release`.
 This creates the executable `simplify` in the folder `target`.
 
+On macOS, you need to set additional linker arguments. One option is to compile with `cargo rustc --release -- -C link-arg=-undefined -C link-arg=dynamic_lookup`, the other is to create a .cargo/config with the following content:
+
+```
+[target.x86_64-apple-darwin]
+rustflags = [
+  "-C", "link-arg=-undefined",
+  "-C", "link-arg=dynamic_lookup",
+]
+
+[target.aarch64-apple-darwin]
+rustflags = [
+  "-C", "link-arg=-undefined",
+  "-C", "link-arg=dynamic_lookup",
+]
+```
+
+For more information, see https://rustrepo.com/repo/PyO3-PyO3-rust-foreign-function-interface.
+
 #### Quickstart
 To obtain the binary, run the following commands (meant for linux shell):
 ```
