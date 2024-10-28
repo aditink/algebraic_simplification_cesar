@@ -24,8 +24,9 @@ simplify
 .idea
 
 
-# Python virtual environment
+# Python
 .env
+*/__pycache__/
 
 # Visual Studio Code
 .vscode
