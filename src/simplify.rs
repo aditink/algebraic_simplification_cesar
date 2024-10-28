@@ -36,6 +36,7 @@ fn store_if_equiv(
     pass: impl Fn(String, String) -> String,
 ) -> String {
     let mut result = pass(old_expr.clone(), assumptions.clone());
+  
     if config::DEBUG {
         println!("##### {} --> \n {} \n#####", old_expr, result);
     }
