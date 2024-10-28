@@ -1,4 +1,3 @@
-use crate::config;
 use crate::cesar::pass1::Pass1;
 use crate::cesar::pass10::Pass10;
 use crate::cesar::pass2::Pass2;
@@ -10,6 +9,7 @@ use crate::cesar::pass7::Pass7;
 use crate::cesar::pass8::Pass8;
 use crate::cesar::pass9::Pass9;
 use crate::cesar::rearrange_pass::RearrangePass;
+use crate::config;
 use crate::z3utils;
 
 pub fn simplify(expr: String, assumptions: String) {
@@ -36,6 +36,10 @@ fn store_if_equiv(
     pass: impl Fn(String, String) -> String,
 ) -> String {
     let mut result = pass(old_expr.clone(), assumptions.clone());
+  
+    if config::DEBUG {
+        println!("##### {} --> \n {} \n#####", old_expr, result);
+    }
 
     if !check_equiv(old_expr.clone(), result.clone(), assumptions.clone()) {
         if config::DEBUG {
@@ -48,7 +52,12 @@ fn store_if_equiv(
 
 /// simplify + check for general case redundant disjunct and conjuncts.
 pub fn aggressive_simplify(expr: String, assumptions: String) -> String {
-    let result1 = store_if_equiv(expr.clone(), assumptions.clone(), Pass1::simplify);
+    // make note of initial time
+    let start = std::time::Instant::now();
+    // Applying arithmetic rules before symbolic rules.
+    let result0 = store_if_equiv(expr.clone(), assumptions.clone(), Pass7::simplify);
+
+    let result1 = store_if_equiv(result0.clone(), assumptions.clone(), Pass1::simplify);
 
     let result2 = store_if_equiv(result1.clone(), assumptions.clone(), Pass2::simplify);
 
@@ -70,9 +79,9 @@ pub fn aggressive_simplify(expr: String, assumptions: String) -> String {
     let result9 = store_if_equiv(result6_2.clone(), assumptions.clone(), Pass9::simplify);
 
     let result10 = store_if_equiv(result9.clone(), assumptions.clone(), Pass10::simplify);
-
+    let end = start.elapsed();
     if config::DEBUG {
-        println!("Passes succeeded.");
+        println!("Passes succeeded. in {} ms", end.as_millis());
     }
 
     println!("{}", result10);
